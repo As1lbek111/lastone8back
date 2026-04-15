@@ -1,0 +1,14 @@
+-- Add minutes_late to attendance
+ALTER TABLE attendance ADD COLUMN IF NOT EXISTS minutes_late INTEGER DEFAULT 0;
+
+-- Teacher attendance table  
+CREATE TABLE IF NOT EXISTS teacher_attendance (
+  id SERIAL PRIMARY KEY,
+  teacher_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  lesson_id INTEGER REFERENCES lessons(id) ON DELETE CASCADE,
+  status VARCHAR(20) DEFAULT 'present' CHECK (status IN ('present','absent','late')),
+  minutes_late INTEGER DEFAULT 0,
+  marked_at TIMESTAMP DEFAULT NOW(),
+  marked_by INTEGER REFERENCES users(id),
+  UNIQUE(teacher_id, lesson_id)
+);
